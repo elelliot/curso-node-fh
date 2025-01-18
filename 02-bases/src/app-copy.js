@@ -23,7 +23,7 @@ ahi me da error, debo usar "npm run dev" para que funcione.
 
 //Tambien podemos desestructurar
 const { emailTemplate } = require("./js-foundation/01-template");
-// console.log(emailTemplate);
+console.log(emailTemplate);
 
 //Si queremos usar el import, que es mas moderno, da error ya que node por defecto usa el require y hay que hacer configuraciones.
 // import { emailTemplate } from "./js-foundation/01-template";
