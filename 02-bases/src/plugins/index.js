@@ -3,10 +3,12 @@ Como tenemos algunas importaciones del mismo directorio,
 podemos crear un archivo de barril: index.js 
 en el directorio plugins y exportar todo lo que necesitamos desde aqui
 */
-const { getUUID } = require('../plugins/get-id.plugin')
-const { getAge } = require('../plugins/get-age.plugin')
+const { getUUID } = require("../plugins/get-id.plugin");
+const { getAge } = require("../plugins/get-age.plugin");
+const { http } = require("../plugins/http-client.plugin");
 
 module.exports = {
-    getAge,
-    getUUID
-}
+  getAge,
+  getUUID,
+  http,
+};
