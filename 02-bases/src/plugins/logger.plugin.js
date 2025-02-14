@@ -1,8 +1,13 @@
 const winston = require("winston");
+const { combine, timestamp, json } = winston.format
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.json(),
+  // format: winston.format.json(),
+  format: combine(
+    timestamp(), //agrega timestamp a los logs que creamos desde aqui
+    json()
+  ),
   // defaultMeta: { service: "user-service" }, //'user-service' overridea al app.js que usamos, por eso lo quitamos aqui
   transports: [
     //
@@ -31,5 +36,8 @@ if (process.env.NODE_ENV !== "production") {
 module.exports = function buildLogger(service) {
   return {
     log: (message) => logger.log("info", { message, service }),
+    //podemos evitarnos poner la fecha manualmente con new Date().toISOString() y usar el timestamp de winston
+    // error: (message) => logger.error("error", { message, service, at: new Date().toISOString() }),
+    error: (message) => logger.error("error", { message, service, }),
   };
 };
