@@ -30,7 +30,11 @@ npm install -D ts-node nodemon
 3- Trackeamos el archivo transpilado de typescript (dist/app.js, en este caso)
 npx nodemon dist/app
 
+--------------------------------------
 El problema con esto es que ahora tendremos que usar al menos 2 terminales para trabajar, una para el watch de TS y otra para el watch de nodemon (QUE HUEVA LOCO)
+npx nodemon dist/app 
+y 
+npx tsc --watch
 
 */
 const hero = findHeroById(4);
