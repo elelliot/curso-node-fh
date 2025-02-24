@@ -1,10 +1,15 @@
 //Ahora usamos el plugin del http-client que creamos
-const { http } = require("../plugins"); //Remember, el index.js ya lo expone y no necesitamos ponerlo en el import (Se puede pero no es necesario)
+//const { http } = require("../plugins"); //Remember, el index.js ya lo expone y no necesitamos ponerlo en el import (Se puede pero no es necesario)
 
-const getPokemonById = async (id) => {
+//Importamos el plugin del http-client que migramos a typescript
+import { httpClient as http } from "../plugins";
+
+
+//Ahora devuelve el name del pokemon en vez de un objeto
+export const getPokemonNameById = async (id: string | number):Promise<string> => {
   const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
   const pokemon = await http.get(url);
-  return pokemon;
+  return pokemon.name;
 };
 
 //Async await approach
@@ -49,6 +54,6 @@ Cons:
 //   });
 // };
 
-module.exports = {
-  getPokemonById,
-};
+// module.exports = {
+//   getPokemonById,
+// };

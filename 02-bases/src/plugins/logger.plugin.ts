@@ -1,5 +1,7 @@
-const winston = require("winston");
-const { combine, timestamp, json } = winston.format
+import winston ,{ format } from 'winston'
+// const winston = require("winston");
+
+const { combine, timestamp, json } = format
 
 const logger = winston.createLogger({
   level: "info",
@@ -32,12 +34,23 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-//Default export
-module.exports = function buildLogger(service) {
+//Default export (Legacy)
+// module.exports = function buildLogger(service) {
+//   return {
+//     log: (message) => logger.log("info", { message, service }),
+//     //podemos evitarnos poner la fecha manualmente con new Date().toISOString() y usar el timestamp de winston
+//     // error: (message) => logger.error("error", { message, service, at: new Date().toISOString() }),
+//     error: (message) => logger.error("error", { message, service, }),
+//   };
+// };
+
+
+//Ahora exportemos de forma moderna y agregamos types...
+export const buildLogger = (service: string) => {
   return {
-    log: (message) => logger.log("info", { message, service }),
+    log: (message: string) => logger.log("info", { message, service }),
     //podemos evitarnos poner la fecha manualmente con new Date().toISOString() y usar el timestamp de winston
     // error: (message) => logger.error("error", { message, service, at: new Date().toISOString() }),
-    error: (message) => logger.error("error", { message, service, }),
+    error: (message: string) => logger.error("error", { message, service, }),
   };
 };

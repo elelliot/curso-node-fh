@@ -21,8 +21,41 @@
 // };
 
 //Factory Pattern (Con esto podre mandar las dependencias como argumentos y nos quitamos el acoplamiento (las dependencias no estan hardcodeadas))
-const buildMakePerson = ({ getUUID, getAge }) => {
-  return ({ name, birthdate }) => {
+// const buildMakePerson = ({ getUUID, getAge }) => {
+//   return ({ name, birthdate }) => {
+//     return {
+//       id: getUUID(),
+//       name: name,
+//       birthdate: birthdate,
+//       age: getAge(birthdate),
+//     };
+//   };
+// };
+
+// module.exports = {
+//   buildMakePerson,
+// };
+
+/*
+En vez de generar una clase, usamos una funcion que nos devuelva un objeto,
+las funciones son mas rapidas que la instanciacion de clases. Por eso es mas comun ver factories que clases.
+
+No siempre es buena idea usar factory, en algunos casos con el adapter es suficiente.
+*/
+
+
+//Ahora con typescript...
+interface BuildMakerPersonOptions {
+  getUUID: () => string;
+  getAge: (birthdate: string) => number;
+}
+interface PersonOptions {
+  name: string;
+  birthdate: string;
+}
+
+export const buildMakePerson = ({ getUUID, getAge }:BuildMakerPersonOptions) => {
+  return ({ name, birthdate }: PersonOptions) => {
     return {
       id: getUUID(),
       name: name,
@@ -31,14 +64,3 @@ const buildMakePerson = ({ getUUID, getAge }) => {
     };
   };
 };
-
-module.exports = {
-  buildMakePerson,
-};
-
-/*
-En vez de generar una clase, usamos una funcion que nos devuelva un objeto,
-las funciones son mas rapidas que la instanciacion de clases. Por eso es mas comun ver factories que clases.
-
-No siempre es buena idea usar factory, en algunos casos con el adapter es suficiente.
-*/
