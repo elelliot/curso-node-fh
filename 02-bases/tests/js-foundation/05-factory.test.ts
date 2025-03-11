@@ -1,7 +1,7 @@
 import { buildMakePerson } from "../../src/js-foundation/05-factory";
 import { describe, expect, test } from "@jest/globals";
 
-describe("js-doundation/05-factory.ts", () => {
+describe("js-foundation/05-factory.ts", () => {
   const getUUID = () => "1234";
   const getAge = () => 31;
 

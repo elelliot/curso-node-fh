@@ -1,7 +1,7 @@
 import { getUserById } from "../../src/js-foundation/03-callbacks";
 import { describe, expect, test } from "@jest/globals";
 
-describe("js-doundation/03-callbacks.ts", () => {
+describe("js-foundation/03-callbacks.ts", () => {
   test("getUserById should return an error if user does not exist", (done) => {
     const id = 10;
 
