@@ -1,6 +1,29 @@
 import { buildLogger,logger as winstonLogger } from "../../src/plugins/logger.plugin";
 import { describe, expect, jest, test } from "@jest/globals";
 
+/*
+----------------------COVERAGE
+-Ejecutamos npm run test:coverage para ver la cobertura de los test
+-Tambien podemos abrir el index.html que viene en la carpeta coverage/lcov-report/index.html
+   -Nos arroja datos de la cobertura de los test
+
+
+-----------------------BUILD
+-Podemos hacer la build SOLO si los test pasan:
+ANTES: ----> "build": "rimraf ./dist && tsc",
+AHORA: ----> "build": "npm run test && rimraf ./dist && tsc",
+
+-"start" ya no ejecutaria la build, solo el archivo dist/app.js
+ANTES: ----> "start": "npm run build && node dist/app.js"
+AHORA: ----> "start": "node dist/app.js"
+*/
+
+
+
+
+
+
+
 describe("plugins/logger-plugin.ts", () => {
 
   test("buildLogger() should return a function logger", () => {
