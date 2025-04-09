@@ -48,5 +48,14 @@ Donde:
 */
        
        
-console.log(process.argv)
-console.log(yarg);
+// console.log(process.argv)
+// console.log(yarg);
+
+(async()=>{
+  await main();
+})();
+
+async function main(){
+  //Al imprimir los valores, me muestra ambos argumentos con su alias, por ejemplo: '--base' y '-b' o '--limit' y '-l'
+  console.log(yarg);
+}
