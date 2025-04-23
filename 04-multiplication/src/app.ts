@@ -1,6 +1,7 @@
 // console.log(process.env)
 
 import { yarg } from "./config/plugins/yargs.plugin";
+import { ServerApp } from "./presentation/server-app";
 
 /*
 ---------------------------------------------------------------------------------------------------
@@ -57,5 +58,8 @@ Donde:
 
 async function main(){
   //Al imprimir los valores, me muestra ambos argumentos con su alias, por ejemplo: '--base' y '-b' o '--limit' y '-l'
-  console.log(yarg);
+  //console.log(yarg);
+  const { b:base, l:limit, s:showTable } = yarg
+
+  ServerApp.run({ base, limit, showTable});
 }

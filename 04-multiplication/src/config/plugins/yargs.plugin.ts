@@ -6,7 +6,7 @@ import { hideBin } from 'yargs/helpers'
 - Le asignamos un alias (base)
 - Le asignamos un tipo (number)
 - Le asignamos una descripción (Multiplication table base)
-- demandOption: true, significa que es obligatorio y la aplication tira un error si no se pasa
+- demandOption: true, significa que es obligatorio y la app tira un error si no se pasa
 
 - Si imprimimos yarg, veremos 'b' y 'base' como propiedades con el valor que le pasamos por consola (en este caso 10 cuando ejecutamos el script de 'dev')
 

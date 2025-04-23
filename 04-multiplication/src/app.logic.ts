@@ -19,22 +19,30 @@
 // console.log(data)
 
 
-//Course solution:
+//Course solution: Usando yargs para definir la base y el limite y mostrar la tabla
 import fs from "fs";
+import { yarg } from "./config/plugins/yargs.plugin";
 
 let outputMessage = '';
-const base = 5;
+
+const { b, l, s } = yarg
+const base = b
+const limit = l
+const showTable = s
+
 const header = `
 ==================================================
                 Tabla del ${ base }
 ==================================================\n
 `;
 
-for (let i = 1; i <= 10; i++) {
+for (let i = 1; i <= limit; i++) {
   outputMessage += `${base} x ${i} = ${base * i}\n`; 
 }
 
 outputMessage = header + outputMessage;
+
+if(showTable) console.log(outputMessage);
 
 //Para crear un directorio si no existe
 const outputPath = `outputs`;
