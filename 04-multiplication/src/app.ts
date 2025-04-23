@@ -59,7 +59,8 @@ Donde:
 async function main(){
   //Al imprimir los valores, me muestra ambos argumentos con su alias, por ejemplo: '--base' y '-b' o '--limit' y '-l'
   //console.log(yarg);
-  const { b:base, l:limit, s:showTable } = yarg
+  const { b:base, l:limit, s:showTable, n:fileName, d:fileDestination } = yarg
 
-  ServerApp.run({ base, limit, showTable});
+  //Creamos un punto de entrada para la app usando clean architecture
+  ServerApp.run({ base, limit, showTable, fileName, fileDestination });
 }
