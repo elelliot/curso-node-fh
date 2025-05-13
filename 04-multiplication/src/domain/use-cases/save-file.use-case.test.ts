@@ -92,5 +92,21 @@ describe("SaveFileUseCase", () => {
 
     const result = saveFile.execute(customOptions); //Aqui ya se ejecuta el mkdirSync con el mockImplementation
     expect(result).toBeFalsy(); //Como mkdirSync se va al catch, el resultado es false (en el save-file-use-case.ts)
+
+    mkdirSpy.mockRestore(); //El mockImplementation persiste, pasa a las siguientes pruebas, por lo que va a dar error si no lo limpiamos, asi que usamos mockRestore al terminar el test.
+  });
+
+  test("Should return false if file couldn't be created", () => {
+    const saveFile = new SaveFile();
+    const writeFileSpy = jest
+      .spyOn(fs, "writeFileSync")
+      .mockImplementation(() => {
+        throw new Error("Custom Writing Error Message");
+      });
+
+    const result = saveFile.execute({ fileContent: "Hola" });
+    expect(result).toBe(false);
+
+    writeFileSpy.mockRestore(); //Limpiamos el mockImplementation de writeFileSync
   });
 });
