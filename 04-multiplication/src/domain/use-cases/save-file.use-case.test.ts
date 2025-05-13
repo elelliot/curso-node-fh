@@ -1,5 +1,5 @@
 import fs from "fs";
-import { afterEach, describe, expect, test } from "@jest/globals";
+import { afterEach, describe, expect, jest, test } from "@jest/globals";
 import { SaveFile } from "./save-file.use-case";
 
 describe("SaveFileUseCase", () => {
@@ -78,5 +78,19 @@ describe("SaveFileUseCase", () => {
     expect(result).toBeTruthy();
     expect(fileExists).toBe(true);
     expect(fileContent).toBe(customOptions.fileContent);
+  });
+
+  //Probando los errores, hay de 2, que falle el mkdirSync, y que falle el writeFileSync. Como simulamos la falla de esos metodos?
+  test("Should return false if directory couldn't be created", () => {
+    const saveFile = new SaveFile();
+
+    //Usamos spyOn (ver get-age-plugin.test.ts para entender como funciona) para simular el error de mkdirSync
+    // mockImplementation sobreescribe el comportamiento de la funcion mkdirSync por la implementacion que le pasemos, en este caso, un throw error
+    const mkdirSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(() => {
+      throw new Error("Custom Error Message");
+    });
+
+    const result = saveFile.execute(customOptions); //Aqui ya se ejecuta el mkdirSync con el mockImplementation
+    expect(result).toBeFalsy(); //Como mkdirSync se va al catch, el resultado es false (en el save-file-use-case.ts)
   });
 });
