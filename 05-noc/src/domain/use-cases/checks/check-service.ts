@@ -8,6 +8,11 @@ interface CheckServiceUseCase {
 
 //Los use cases son clases con codigo que esta especializado en una tarea
 
+
+//Definimos los tipos de las dependencias, para que no se mezclen con los tipos de la interfaz
+type SuccessCallback = () => void;
+type ErrorCallback = (error: string) => void;
+
 // Le decimos a CheckService que implemente la interfaz CheckServiceUseCase (que es una interfaz que define el metodo execute)
 export class CheckService implements CheckServiceUseCase {
   /**
@@ -19,7 +24,13 @@ export class CheckService implements CheckServiceUseCase {
    * No es mas que agregarle dependencias a la clase
    */
 
-  constructor() {}
+  constructor(
+    // Dependencias
+    private readonly successCallback: SuccessCallback,
+    private readonly errorCallback: ErrorCallback
+  ) {
+
+  }
 
   public async execute(url: string): Promise<boolean> {
     try {
@@ -28,11 +39,11 @@ export class CheckService implements CheckServiceUseCase {
         throw new Error(`Error on check service ${url}`);
       }
 
-      console.log(`${url} is ok`);
+      this.successCallback();
 
       return true;
     } catch (error) {
-      console.log(`${error}`);
+      this.errorCallback(`${error}`);
       return false;
     }
   }

@@ -11,7 +11,13 @@ export class Server {
      * Ahora creado el CheckService, podemos usarlo en el cron, para verificar si un sitio/servicio web esta disponible
      */
     CronService.createJob("*/5 * * * * *", () => {
-      new CheckService().execute("https://www.google.com");
+
+      const url = "https://www.google.com";
+      new CheckService(
+        // Inyectamos las dependencias (callbacks) , se ejecutan cuando se ejecuta el metodo execute
+        ()=> console.log(`${url} is ok`),
+        (error)=> console.log(error)
+      ).execute(url);
 
       /**
        * Si queremos usar un json server, podemos usar la url de json server:
