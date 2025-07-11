@@ -2,6 +2,9 @@
  * CheckService es un use case que se encarga de verificar si un sitio web esta disponible
  */
 
+import { LogEntity, LogSeverityLevel } from "../../entities/log.entity";
+import { LogRepository } from "../../repository/log.repository";
+
 interface CheckServiceUseCase {
   execute(url: string): Promise<boolean>;
 }
@@ -10,8 +13,8 @@ interface CheckServiceUseCase {
 
 
 //Definimos los tipos de las dependencias, para que no se mezclen con los tipos de la interfaz
-type SuccessCallback = () => void;
-type ErrorCallback = (error: string) => void;
+type SuccessCallback = (() => void) | undefined;
+type ErrorCallback = ((error: string) => void) | undefined;
 
 // Le decimos a CheckService que implemente la interfaz CheckServiceUseCase (que es una interfaz que define el metodo execute)
 export class CheckService implements CheckServiceUseCase {
@@ -22,10 +25,16 @@ export class CheckService implements CheckServiceUseCase {
    * el builder del factory recibe las dependencias y crea la funcion con las dependencias inyectadas.
    *
    * No es mas que agregarle dependencias a la clase
+   * 
+   * 
+   * Caso de Uso llega al Repostorio y este llega al Datasource.
+   * 
+   * Aqui usamos la dependencia de LogRepository para guardar los logs.
    */
 
   constructor(
-    // Dependencias
+    // Inyeccion de Dependencias
+    private readonly logRepository: LogRepository, //Puedo recibir cualquier repositorio que implemente la interfaz LogRepository.
     private readonly successCallback: SuccessCallback,
     private readonly errorCallback: ErrorCallback
   ) {
@@ -39,11 +48,20 @@ export class CheckService implements CheckServiceUseCase {
         throw new Error(`Error on check service ${url}`);
       }
 
-      this.successCallback();
+      //Creamos el log para cuando el servicio este funcionando.
+      const log = new LogEntity(`Service with ${url} working`, LogSeverityLevel.low);
+      this.logRepository.saveLog(log);
+      this.successCallback && this.successCallback();
 
       return true;
     } catch (error) {
-      this.errorCallback(`${error}`);
+
+      //Creamos el log para cuando el servicio este fallando.
+      const errorMessage = `${url} is not OK: ${error}`;
+      const log = new LogEntity(errorMessage, LogSeverityLevel.high);
+      this.logRepository.saveLog(log);
+
+      this.errorCallback && this.errorCallback(`${error}`);
       return false;
     }
   }

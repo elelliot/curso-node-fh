@@ -5,7 +5,7 @@ type CronTime = string | Date;
 type OnTick = () => void;
 
 export class CronService {
-  // Si tenemosmas de 3 argumentos, mejor mandar un objeto segun CLEAN CODE
+  // Si tenemos mas de 3 argumentos, mejor mandar un objeto segun CLEAN CODE
   static createJob(cronTime: CronTime, onTick: OnTick): CronJob {
     const job = new CronJob(cronTime, onTick);
     job.start();
