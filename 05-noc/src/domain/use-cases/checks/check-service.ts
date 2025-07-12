@@ -11,7 +11,6 @@ interface CheckServiceUseCase {
 
 //Los use cases son clases con codigo que esta especializado en una tarea
 
-
 //Definimos los tipos de las dependencias, para que no se mezclen con los tipos de la interfaz
 type SuccessCallback = (() => void) | undefined;
 type ErrorCallback = ((error: string) => void) | undefined;
@@ -25,10 +24,10 @@ export class CheckService implements CheckServiceUseCase {
    * el builder del factory recibe las dependencias y crea la funcion con las dependencias inyectadas.
    *
    * No es mas que agregarle dependencias a la clase
-   * 
-   * 
+   *
+   *
    * Caso de Uso llega al Repostorio y este llega al Datasource.
-   * 
+   *
    * Aqui usamos la dependencia de LogRepository para guardar los logs.
    */
 
@@ -37,9 +36,7 @@ export class CheckService implements CheckServiceUseCase {
     private readonly logRepository: LogRepository, //Puedo recibir cualquier repositorio que implemente la interfaz LogRepository.
     private readonly successCallback: SuccessCallback,
     private readonly errorCallback: ErrorCallback
-  ) {
-
-  }
+  ) {}
 
   public async execute(url: string): Promise<boolean> {
     try {
@@ -49,16 +46,23 @@ export class CheckService implements CheckServiceUseCase {
       }
 
       //Creamos el log para cuando el servicio este funcionando.
-      const log = new LogEntity(`Service with ${url} working`, LogSeverityLevel.low);
+      const log = new LogEntity({
+        message: `Service with ${url} working`,
+        level: LogSeverityLevel.low,
+        origin: "check-service.ts",
+      });
       this.logRepository.saveLog(log);
       this.successCallback && this.successCallback();
 
       return true;
     } catch (error) {
-
       //Creamos el log para cuando el servicio este fallando.
       const errorMessage = `${url} is not OK: ${error}`;
-      const log = new LogEntity(errorMessage, LogSeverityLevel.high);
+      const log = new LogEntity({
+        message: errorMessage,
+        level: LogSeverityLevel.high,
+        origin: "check-service.ts",
+      });
       this.logRepository.saveLog(log);
 
       this.errorCallback && this.errorCallback(`${error}`);

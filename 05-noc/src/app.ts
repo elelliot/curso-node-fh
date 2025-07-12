@@ -1,6 +1,6 @@
 //Seteamos el proyecto con ts-node-dev:
 // https://gist.github.com/Klerith/3ba17e86dc4fabd8301a59699b9ffc0b
-import { envs } from "./plugins/envs.plugin";
+// import { envs } from "./config/plugins/envs.plugin";
 import { Server } from "./presentation/server";
 
 // Tambien se pudo haber hecho con nodemon:
@@ -15,7 +15,7 @@ import { Server } from "./presentation/server";
 })();
 
 function main() {
-  // Server.start();
-  // console.log(process.env)
-  // console.log( envs )
+  Server.start();
+  // console.log(process.env);
+  // console.log(envs);
 }
