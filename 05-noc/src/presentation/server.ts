@@ -1,3 +1,4 @@
+import { envs } from "../config/plugins/envs.plugin";
 import { SendEmailLogs } from "../domain/use-cases/email/send-email-logs";
 import { FileSystemDatasource } from "../infrastructure/datasources/file-system.datasource";
 import { LogRepositoryImpl } from "../infrastructure/repositories/log.repository.impl";
@@ -19,36 +20,39 @@ export class Server {
 
     // Enviar correos
     /**
-     * Ahora debemos inyectar el repositorio de logs(en este caso `fileSystemLogRepository`)
-     * en el constructor de EmailService.
-     * const emailService = new EmailService(fileSystemLogRepository);
-     * 
-     emailService.sendEmail({
-      to: envs.MAILER_EMAIL_RECEIVER,
-      subject: "Test Mail",
-      htmlBody: `
-        <h3>System Logs - NOC</h3>
-        <p>This is a test mail</p>
-        <p>See attached logs</p>
-      `,
-    });
+     * BEFORE (With FileSystemLogRepository Injected in EmailService):
+     > Ahora debemos inyectar el repositorio de logs(en este caso `fileSystemLogRepository`) en el constructor de EmailService.
+       const emailService = new EmailService(fileSystemLogRepository);
+       emailService.sendEmail({
+         to: envs.MAILER_EMAIL_RECEIVER,
+         subject: "Test Mail",
+         htmlBody: `
+           <h3>System Logs - NOC</h3>
+           <p>This is a test mail</p>
+           <p>See attached logs</p>
+         `,
+       });
 
-    emailService.sendEMailWithFileSystemLogs([
-      "mail1",
-      "mail2",
-    ]);
-     * 
-     * 
-     * 
-     * Update: ya no lo inyectamos, lo borramos del constructor y
-     * creamos un caso de uso para enviar los correos.
-     * 
-     * Enviamos los logs a los correos.
-      new SendEmailLogs(emailService, fileSystemLogRepository).execute([
+      emailService.sendEMailWithFileSystemLogs([
         "mail1",
         "mail2",
       ]);
      */
+    /**
+     * Update: Ya no lo inyectamos, lo borramos del constructor y Creamos un caso de uso para enviar los correos (Ahora todos incluyen la creacion de logs).
+     > La diferencia es que ahora podemos enviar de uno a varios destinatarios.
+     * 
+     * Enviamos los correos con los logs a los destinatarios.
+        new SendEmailLogs(emailService, fileSystemLogRepository).execute([
+          "mail1",
+          "mail2",
+        ]);
+     */
+      new SendEmailLogs(emailService, fileSystemLogRepository).execute([
+        "mail1",
+        "mail2",
+      ]);
+      
 
     // ------------------------------------------------------------
 

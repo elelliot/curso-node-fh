@@ -19,6 +19,7 @@ interface Attachment {
 }
 
 export class EmailService {
+  //Creamos el transporter para enviar los correos. (Ver la documentacion de nodemailer)
   private transporter = nodemailer.createTransport({
     service: envs.MAILER_SERVICE,
     auth: {
@@ -30,9 +31,11 @@ export class EmailService {
   /**
    * Para crear logs con los correos enviados, debemos inyectar el repositorio de logs.
    * por tanto creamos un constructor para inyectar el repositorio de logs cuando lo usemos
-   *
-   * Update: ya no lo inyectamos, lo borramos del constructor.
+   * constructor(
    * private readonly logRepository: LogRepository
+   * ) {}
+   * Update: ya no lo inyectamos, lo borramos del constructor.
+   *
    */
   constructor() {}
 
@@ -47,40 +50,9 @@ export class EmailService {
         html: htmlBody,
         attachments,
       });
-
-      // Registramos el log de que se envio el correo correctamente.
-      const log = new LogEntity({
-        level: LogSeverityLevel.low,
-        message: "Email sent",
-        origin: "email.service.ts",
-      });
-      console.log({
-        message: log.message,
-        level: log.level,
-        createdAt: log.createdAt,
-        origin: log.origin,
-      });
-
-      // this.logRepository.saveLog(log);
-      // console.log("Message sent: ", sentInformation);
-
+      console.log("Message sent: ", sentInformation);
       return true;
     } catch {
-      // Registramos el log de que se envio el correo correctamente.
-      const log = new LogEntity({
-        level: LogSeverityLevel.high,
-        message: "Email was NOT sent",
-        origin: "email.service.ts",
-      });
-      console.log({
-        message: log.message,
-        level: log.level,
-        createdAt: log.createdAt,
-        origin: log.origin,
-      });
-
-      // this.logRepository.saveLog(log);
-
       return false;
     }
   }

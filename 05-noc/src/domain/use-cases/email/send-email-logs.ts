@@ -17,9 +17,11 @@ export class SendEmailLogs implements SendLogEmailUseCase {
 
   async execute(to: string | string[]): Promise<boolean> {
     try {
+      // Al ser opcionales los attachments, podemos simplemente enviar el array vacio y lo acepta.
       const sent = await this.emailService.sendEMailWithFileSystemLogs(to);
       if (!sent) throw new Error("Error sending email log");
 
+      // Creamos el log de que se envio el correo correctamente. y lo guardamos en el repositorio (fileSystemLogRepository).
       const log = new LogEntity({
         message: "Log Email Sent",
         level: LogSeverityLevel.low,
@@ -27,6 +29,7 @@ export class SendEmailLogs implements SendLogEmailUseCase {
       });
       this.logRepository.saveLog(log);
     } catch (error) {
+      // Creamos el log de que hubo error al enviar el correo. y lo guardamos en el repositorio (fileSystemLogRepository).
       const log = new LogEntity({
         message: "Error sending email log",
         level: LogSeverityLevel.high,
