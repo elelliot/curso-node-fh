@@ -64,7 +64,9 @@ export class FileSystemDatasource implements LogDatasource {
 
     if (content === "") return [];
 
-    const logs = content.split("\n").map((json) => LogEntity.fromJson(json)); //Devuelve un array de LogEntity.
+    const logs = content.split("\n")
+      .filter(json => json.trim() !== "") // Filter out empty strings and whitespace-only strings
+      .map((json) => LogEntity.fromJson(json)); //Devuelve un array de LogEntity.
     return logs;
   };
   /**
