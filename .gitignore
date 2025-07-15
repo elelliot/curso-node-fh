@@ -6,3 +6,5 @@ test-destination/
 
 logs/
 .env
+
+05-noc/mongo/

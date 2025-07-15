@@ -43,6 +43,7 @@ export class LogEntity {
    */
   // "{"level":"low","message":"test","createdAt":"2025-07-10T12:00:00.000Z"}"
   static fromJson = (json: string): LogEntity => {
+    json = json === "" ? "{}" : json;
     const { message, level, createdAt, origin } = JSON.parse(json); //Devuelve un objeto con las propiedades level, message y createdAt.
 
     const log = new LogEntity({
@@ -53,6 +54,19 @@ export class LogEntity {
     });
     //Como ahora ponemos
     // log.createdAt = new Date(createdAt); //La fecha no queremos que se cree en el constructor, sino en el momento de la creacion del log y debemos parsear la fecha ya que viene como string.
+    return log;
+  };
+
+  //Creamos un factory function para crear un `LogEntity` basado en un objeto de Mongo (Mongoose)
+  static fromObject = (object: { [key: string]: any }): LogEntity => {
+    const { message, level, createdAt, origin } = object;
+    const log = new LogEntity({
+      message,
+      level,
+      origin,
+      createdAt,
+    });
+
     return log;
   };
 }

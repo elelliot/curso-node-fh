@@ -1,28 +1,34 @@
 import { envs } from "../config/plugins/envs.plugin";
+import { LogSeverityLevel } from "../domain/entities/log.entity";
+import { CheckService } from "../domain/use-cases/checks/check-service";
 import { SendEmailLogs } from "../domain/use-cases/email/send-email-logs";
 import { FileSystemDatasource } from "../infrastructure/datasources/file-system.datasource";
+import { MongoLogDataSource } from "../infrastructure/datasources/mongo-log.datasource";
 import { LogRepositoryImpl } from "../infrastructure/repositories/log.repository.impl";
+import { CronService } from "./cron/cron-service";
 import { EmailService } from "./email/email.service";
 
 //Creamos la instancia de la implementacion del repositorio de logs.
 //Al ser llamado desde el constructor, se ejecuta el constructor de LogRepositoryImpl y se ejecuta el constructor de FileSystemDatasource.
 
 //Si ocupamos otro repositorio, solo debemos crear una nueva instancia de LogRepositoryImpl con el nuevo datasource. y hacer los cambios en CheckService etc...
-const fileSystemLogRepository = new LogRepositoryImpl(
-  new FileSystemDatasource()
+//Gracias a Clean Architecture, podemos cambiar el datasource sin tener que cambiar el codigo de CheckService, EmailService, etc...
+const logRepository = new LogRepositoryImpl(
+  new FileSystemDatasource() // FileSystem Datasource
+  //new MongoLogDataSource() //Mongo Datasource
 );
 
 const emailService = new EmailService();
 
 export class Server {
-  public static start() {
+  public static async start() {
     console.log("Server started...");
 
     // Enviar correos
     /**
-     * BEFORE (With FileSystemLogRepository Injected in EmailService):
-     > Ahora debemos inyectar el repositorio de logs(en este caso `fileSystemLogRepository`) en el constructor de EmailService.
-       const emailService = new EmailService(fileSystemLogRepository);
+     * BEFORE (With logRepository Injected in EmailService):
+     > Ahora debemos inyectar el repositorio de logs(en este caso `logRepository`) en el constructor de EmailService.
+       const emailService = new EmailService(logRepository);
        emailService.sendEmail({
          to: envs.MAILER_EMAIL_RECEIVER,
          subject: "Test Mail",
@@ -43,16 +49,11 @@ export class Server {
      > La diferencia es que ahora podemos enviar de uno a varios destinatarios.
      * 
      * Enviamos los correos con los logs a los destinatarios.
-        new SendEmailLogs(emailService, fileSystemLogRepository).execute([
+        new SendEmailLogs(emailService, logRepository).execute([
           "mail1",
           "mail2",
         ]);
      */
-      new SendEmailLogs(emailService, fileSystemLogRepository).execute([
-        "mail1",
-        "mail2",
-      ]);
-      
 
     // ------------------------------------------------------------
 
@@ -65,7 +66,7 @@ export class Server {
     //   const url = "https://www.google.com"; //"http://localhost:3000/"
 
     //   new CheckService(
-    //     fileSystemLogRepository,
+    //     logRepository,
     //     // Inyectamos las dependencias (callbacks) , se ejecutan cuando se ejecuta el metodo execute
     //     () => console.log(`${url} is ok`), //undefined
     //     (error) => console.log(error) //undefined
@@ -84,5 +85,8 @@ export class Server {
     //    * Pero nos quedaremos con el google.com para no complicarnos la vida.
     //    */
     // });
+
+    const logs = await logRepository.getLogs(LogSeverityLevel.low);
+    console.log(logs);
   }
 }

@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  mongo-db:
+    image: mongo:6.0.6
+    restart: always #Cuando se inicia Docker Desktop,levanta la imagen
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      # Gracias a los volumes, la data persiste ya que lo que se graba en el contenedor pasa a donde le indicamos (./mongo:/data/db)
+    volumes:
+      - ./mongo:/data/db
+    #puerto de computadora/puerto de contenedor, mongo tiene por defecto el 27017 no como postgres que es 5432
+    ports:
+      - 27017:27017
