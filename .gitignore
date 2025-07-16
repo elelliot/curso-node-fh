@@ -8,3 +8,4 @@ logs/
 .env
 
 05-noc/mongo/
+05-noc/postgres/
