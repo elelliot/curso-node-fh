@@ -1,6 +1,6 @@
 //Seteamos el proyecto con ts-node-dev:
 // https://gist.github.com/Klerith/3ba17e86dc4fabd8301a59699b9ffc0b
-// import { envs } from "./config/plugins/envs.plugin";
+import "reflect-metadata";
 import { envs } from "./config/plugins/envs.plugin";
 import { LogModel, MongoDatabase } from "./data/mongo";
 import { Server } from "./presentation/server";
