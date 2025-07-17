@@ -1,22 +1,28 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 export enum Level {
   LOW = "low",
   MEDIUM = "medium",
   HIGH = "high",
 }
 
-@Entity()
+@Entity({name:'Logs'})
 export class Log {
-  @Column()
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @Column({
+    length: 150,
+  })
   message!: string;
 
-  @Column()
+  @Column({
+    length: 50,
+  })
   origin!: string;
 
   @Column({
     type: "varchar",
     length: 10,
-    nullable: false,
   })
   level!: Level;
 

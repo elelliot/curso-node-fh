@@ -2,11 +2,13 @@
 // https://gist.github.com/Klerith/3ba17e86dc4fabd8301a59699b9ffc0b
 import "reflect-metadata";
 import { envs } from "./config/plugins/envs.plugin";
-import { LogModel, MongoDatabase } from "./data/mongo";
+import { MongoDatabase, LogModel } from "./data/mongo";
 import { Server } from "./presentation/server";
+import { AppDataSource } from "./config/plugins/typeorm.plugin";
+import { PostgresDatabase } from "./data/postgres/init";
+import { Level, Log } from "./data/postgres/models/log.entity";
 
-import { DataSource } from "typeorm";
-import { Level, Log } from "./entity/Log";
+// import { Level, Log } from "./data/postgres/models/log.entity";
 // Tambien se pudo haber hecho con nodemon:
 // https://gist.github.com/Klerith/47af527da090043f604b972b22dd4c01
 
@@ -19,6 +21,7 @@ import { Level, Log } from "./entity/Log";
 })();
 
 async function main() {
+  // ---------------------------MONGO---------------------------------
   //Conectamos a mongo con la clase que creamos
   // await MongoDatabase.connect({
   //   mongoUrl: envs.MONGO_URL,
@@ -37,49 +40,34 @@ async function main() {
   // await newLog.save();
   // console.log(newLog);
 
-  // READ (Get all Logs)
+  // READ (Get all Logs from Mongo)
   // const logs = await LogModel.find();
   // console.log(logs);
 
-  //DataSource para TypeORM
-  const AppDataSource = new DataSource({
-    type: "postgres",
-    host: envs.POSTGRES_HOST,
-    port: envs.POSTGRES_PORT,
-    username: envs.POSTGRES_USER,
-    password: envs.POSTGRES_PASSWORD,
-    database: envs.POSTGRES_DB,
-    synchronize: true,
-    logging: false,
-    entities: [Log],
-    migrations: [],
-    subscribers: [],
-  });
 
-  //Iniciamos La base de datos de Postgres con TypeORM
-  AppDataSource.initialize()
-    .then(async () => {
-      console.log("Inserting a new log into the database...");
-      const user = new Log();
-      user.message = "Test Message from TypeORM";
-      user.origin = "App.ts";
-      user.level = Level.LOW;
-      user.createdAt = new Date();
-      await AppDataSource.manager.save(user);
-      console.log("Saved a new Log!");
+  // ---------------------------POSTGRES---------------------------------
+  //Conectamos a Postgres
+  // await PostgresDatabase.connect();
+  
+  //Create Log para guardar en Postgres
+  // const log = new Log();
+  // log.message = "New Log 6 from TypeORM";
+  // log.origin = "app.ts";
+  // log.level = Level.MEDIUM;
+  // log.createdAt = new Date();
+  // await AppDataSource.manager.save(log);
+  // console.log("Saved a new Log!");
 
-      console.log("Loading logs from the database...");
-      const logs = await AppDataSource.manager.find(Log);
-      console.log("Loaded logs: ", logs);
+  //READ (Get all Logs from Postgres)
+  // console.log("Loading logs from the database...");
+  // const logs = await AppDataSource.manager.find(Log,{
+  //   where:{
+  //     level:Level.MEDIUM
+  //   }
+  // });
+  // console.log("Loaded logs: ", logs);
 
-      console.log(
-        "Here you can setup and run express / fastify / any other framework."
-      );
-    })
-    .catch((error) => console.log(error));
-
+  // ---------------------------SERVER---------------------------------
   //Iniciamos el servidor
-  // Server.start();
-  // console.log(process.env);
-  // console.log(envs);
+  Server.start();
 }

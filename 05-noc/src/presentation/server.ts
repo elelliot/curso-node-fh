@@ -86,7 +86,8 @@ export class Server {
     //    */
     // });
 
-    const logs = await logRepository.getLogs(LogSeverityLevel.low);
-    console.log(logs);
+    // Obtenemos los logs del LogRepository (FileSystemDatasource, MongoLogDataSource, y/o PostgresLogDataSource)
+    // const logs = await logRepository.getLogs(LogSeverityLevel.low);
+    // console.log(logs);
   }
 }
