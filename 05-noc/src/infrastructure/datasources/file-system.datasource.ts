@@ -56,6 +56,7 @@ export class FileSystemDatasource implements LogDatasource {
     } else {
       fs.appendFileSync(this.highLogsPath, logAsJson);
     }
+    console.log("FileSystem Log saved: ");
   }
 
   //Evitamos repetir codigo (DRY) con...
@@ -64,16 +65,15 @@ export class FileSystemDatasource implements LogDatasource {
 
     if (content === "") return [];
 
-    const logs = content.split("\n")
-      .filter(json => json.trim() !== "") // Filter out empty strings and whitespace-only strings
+    const logs = content
+      .split("\n")
+      .filter((json) => json.trim() !== "") // Filter out empty strings and whitespace-only strings
       .map((json) => LogEntity.fromJson(json)); //Devuelve un array de LogEntity.
     return logs;
   };
-  /**
-   * Este metodo es para obtener los logs de un nivel de severidad especifico.
-   *
-   * Debemos leer el archivo de logs y parsear el contenido a un array de LogEntity.
-   */
+
+  // Este metodo es para obtener los logs de un nivel de severidad especifico.
+  // Debemos leer el archivo de logs y parsear el contenido a un array de LogEntity.
   async getLogs(severityLevel: LogSeverityLevel): Promise<LogEntity[]> {
     switch (severityLevel) {
       //Usamos el enum de LogSeverityLevel para hacer la comparacion.

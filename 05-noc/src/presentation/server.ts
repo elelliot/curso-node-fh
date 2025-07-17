@@ -1,9 +1,11 @@
 import { envs } from "../config/plugins/envs.plugin";
 import { LogSeverityLevel } from "../domain/entities/log.entity";
 import { CheckService } from "../domain/use-cases/checks/check-service";
+import { CheckServiceMultiple } from "../domain/use-cases/checks/check-service-multiple";
 import { SendEmailLogs } from "../domain/use-cases/email/send-email-logs";
 import { FileSystemDatasource } from "../infrastructure/datasources/file-system.datasource";
 import { MongoLogDataSource } from "../infrastructure/datasources/mongo-log.datasource";
+import { PostgresLogDataSource } from "../infrastructure/datasources/postgres-log.datasource";
 import { LogRepositoryImpl } from "../infrastructure/repositories/log.repository.impl";
 import { CronService } from "./cron/cron-service";
 import { EmailService } from "./email/email.service";
@@ -11,12 +13,24 @@ import { EmailService } from "./email/email.service";
 //Creamos la instancia de la implementacion del repositorio de logs.
 //Al ser llamado desde el constructor, se ejecuta el constructor de LogRepositoryImpl y se ejecuta el constructor de FileSystemDatasource.
 
+//------------Para Single Check Service----------------
 //Si ocupamos otro repositorio, solo debemos crear una nueva instancia de LogRepositoryImpl con el nuevo datasource. y hacer los cambios en CheckService etc...
 //Gracias a Clean Architecture, podemos cambiar el datasource sin tener que cambiar el codigo de CheckService, EmailService, etc...
 const logRepository = new LogRepositoryImpl(
-  new FileSystemDatasource() // FileSystem Datasource
+  // new FileSystemDatasource() // FileSystem Datasource
   //new MongoLogDataSource() //Mongo Datasource
+  new PostgresLogDataSource() //Postgres Datasource
 );
+//--------------------------------
+
+//------------Para Multiple Check Service----------------
+const fsLogRepository = new LogRepositoryImpl(new FileSystemDatasource());
+const mongoLogRepository = new LogRepositoryImpl(new MongoLogDataSource());
+const postgresLogRepository = new LogRepositoryImpl(
+  new PostgresLogDataSource()
+);
+
+//--------------------------------
 
 const emailService = new EmailService();
 
@@ -62,32 +76,40 @@ export class Server {
      * Ahora creado el CheckService, podemos usarlo en el cron, para verificar si un sitio/servicio web esta disponible
      */
 
-    // CronService.createJob("*/5 * * * * *", () => {
-    //   const url = "https://www.google.com"; //"http://localhost:3000/"
+    CronService.createJob("*/5 * * * * *", () => {
+      const url = "https://www.google.com"; //"http://localhost:3000/"
 
-    //   new CheckService(
-    //     logRepository,
-    //     // Inyectamos las dependencias (callbacks) , se ejecutan cuando se ejecuta el metodo execute
-    //     () => console.log(`${url} is ok`), //undefined
-    //     (error) => console.log(error) //undefined
-    //   ).execute(url);
+      // Single Check Service
+      // new CheckService(
+      //   logRepository,
+      //   // Inyectamos las dependencias (callbacks) , se ejecutan cuando se ejecuta el metodo execute
+      //   () => console.log(`${url} is ok`), //undefined
+      //   (error) => console.log(error) //undefined
+      // ).execute(url);
 
-    //   /**
-    //    * Si queremos usar un json server, podemos usar la url de json server:
-    //    * http://localhost:3000/
-    //    *
-    //    * En este caso creamos un nuevo proyecto en 06-json-server para configurar un json-server (duuh)
-    //    * y asi poder usarlo en este proyecto.
-    //    * Ver: https://www.npmjs.com/package/json-server
-    //    *
-    //    * Nos deja setear un backend local para poder usarlo en el frontend.
-    //    *
-    //    * Pero nos quedaremos con el google.com para no complicarnos la vida.
-    //    */
-    // });
+      // Multiple Check Service (ahora le mandaremos un array de repositorios)
+      // new CheckServiceMultiple(
+      //   [fsLogRepository, mongoLogRepository, postgresLogRepository],
+      //   () => console.log(`${url} is ok`),
+      //   (error) => console.log(error)
+      // ).execute(url);
+
+      /**
+       * Si queremos usar un json server, podemos usar la url de json server:
+       * http://localhost:3000/
+       *
+       * En este caso creamos un nuevo proyecto en 06-json-server para configurar un json-server (duuh)
+       * y asi poder usarlo en este proyecto.
+       * Ver: https://www.npmjs.com/package/json-server
+       *
+       * Nos deja setear un backend local para poder usarlo en el frontend.
+       *
+       * Pero nos quedaremos con el google.com para no complicarnos la vida.
+       */
+    });
 
     // Obtenemos los logs del LogRepository (FileSystemDatasource, MongoLogDataSource, y/o PostgresLogDataSource)
-    // const logs = await logRepository.getLogs(LogSeverityLevel.low);
-    // console.log(logs);
+    const logs = await logRepository.getLogs(LogSeverityLevel.medium);
+    console.log(logs);
   }
 }

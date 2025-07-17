@@ -22,51 +22,12 @@ import { Level, Log } from "./data/postgres/models/log.entity";
 
 async function main() {
   // ---------------------------MONGO---------------------------------
-  //Conectamos a mongo con la clase que creamos
-  // await MongoDatabase.connect({
-  //   mongoUrl: envs.MONGO_URL,
-  //   dbName: envs.MONGO_DB_NAME,
-  // });
-
-  // CREATE
-  // Crear una collecion = tablas, documento = registro, pero se crea una instancia del objecto que queremos guardar
-  // const newLog = await LogModel.create({
-  //   message: "Test Message desde Mongo 3",
-  //   origin: "App.ts",
-  //   level: "medium",
-  // });
-
-  // Aqui es donde se guarda ese objeto en la coleccion
-  // await newLog.save();
-  // console.log(newLog);
-
-  // READ (Get all Logs from Mongo)
-  // const logs = await LogModel.find();
-  // console.log(logs);
-
-
+  await MongoDatabase.connect({
+    mongoUrl: envs.MONGO_URL,
+    dbName: envs.MONGO_DB_NAME,
+  });
   // ---------------------------POSTGRES---------------------------------
-  //Conectamos a Postgres
-  // await PostgresDatabase.connect();
-  
-  //Create Log para guardar en Postgres
-  // const log = new Log();
-  // log.message = "New Log 6 from TypeORM";
-  // log.origin = "app.ts";
-  // log.level = Level.MEDIUM;
-  // log.createdAt = new Date();
-  // await AppDataSource.manager.save(log);
-  // console.log("Saved a new Log!");
-
-  //READ (Get all Logs from Postgres)
-  // console.log("Loading logs from the database...");
-  // const logs = await AppDataSource.manager.find(Log,{
-  //   where:{
-  //     level:Level.MEDIUM
-  //   }
-  // });
-  // console.log("Loaded logs: ", logs);
-
+  await PostgresDatabase.connect();
   // ---------------------------SERVER---------------------------------
   //Iniciamos el servidor
   Server.start();
