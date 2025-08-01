@@ -22,7 +22,13 @@ export class Server {
   }
 
   async start() {
-    
+    //* Middlewares
+
+    // Middlewares de express para parsear el body de las requests 
+    this.app.use( express.json() ); //* raw -> json requests
+    this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded requests
+    //---------------------------
+
 
     //-----------------------------
     //* Public Folder

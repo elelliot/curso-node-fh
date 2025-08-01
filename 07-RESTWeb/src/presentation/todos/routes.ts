@@ -13,6 +13,15 @@ export class TodoRoutes {
         
         // Get By ID, la ruta recibe un argumento `id`
         router.get("/:id", todoController.getTodoById );
+        
+        // Create Todo
+        router.post("/", todoController.createTodo );
+
+        // Update Todo
+        router.put("/:id", todoController.updateTodo );
+
+        // Delete Todo
+        router.delete("/:id", todoController.deleteTodo );
 
     
         return router;
