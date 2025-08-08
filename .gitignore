@@ -11,3 +11,5 @@ logs/
 05-noc/postgres/
 
 07-RESTWeb/keys/
+07-RESTWeb/postgres/
+07-RESTWeb/src/generated/prisma
