@@ -1,8 +1,8 @@
 -- CreateTable
-CREATE TABLE "public"."Todo" (
+CREATE TABLE "public"."todo" (
     "id" SERIAL NOT NULL,
     "text" VARCHAR NOT NULL,
     "completedAt" TIMESTAMP,
 
-    CONSTRAINT "Todo_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "todo_pkey" PRIMARY KEY ("id")
 );
