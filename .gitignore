@@ -7,8 +7,12 @@ test-destination/
 logs/
 .env
 
-mongo/
-postgres/
-keys/
 
+05-noc/mongo
+05-noc/postgres/
+
+07-RESTWeb/keys/
 07-RESTWeb/src/generated/prisma
+
+08-user-store/mongo
+
