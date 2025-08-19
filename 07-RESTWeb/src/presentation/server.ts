@@ -1,5 +1,6 @@
 // Creamos nuestro web server con Express
 import express, { Router } from "express";
+import compression from 'compression'
 import path from "path";
 
 interface Options {
@@ -27,6 +28,7 @@ export class Server {
     // Middlewares de express para parsear el body de las requests 
     this.app.use( express.json() ); //* raw -> json requests
     this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded requests
+    this.app.use( compression() ); // compression
     //---------------------------
 
 
