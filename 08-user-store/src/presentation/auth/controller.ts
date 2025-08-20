@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError, RegisterUserDTO } from "../../domain";
+import { CustomError, LoginUserDTO, RegisterUserDTO } from "../../domain";
 import { AuthService } from "../services/auth.service";
 
 export class AuthController {
@@ -21,12 +21,18 @@ export class AuthController {
 
     this.authService
       .registerUser(registerDto!)
-      .then((user) => res.json(user))
-      .catch((error) => this.handleError(error, res));
+      .then( user => res.json( user ) )
+      .catch( error => this.handleError( error, res ) );
   };
 
   loginUser = (req: Request, res: Response) => {
-    res.json("loginUser");
+    const [error, loginDto] = LoginUserDTO.login(req.body);
+    if (error) return res.status(400).json( { error } )
+
+    this.authService
+    .loginUser(loginDto!)
+    .then( user => res.json( user ) )
+    .catch( error => this.handleError( error, res ) );
   };
 
   validateEmail = (req: Request, res: Response) => {
