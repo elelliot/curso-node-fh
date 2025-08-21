@@ -35,11 +35,12 @@ export class AuthController {
       .catch((error) => this.handleError(error, res));
   };
 
+  // Aqui llegamos al dar click al link de verificacion del email cuando creamos un user nuevo, el token que usamos aqui es el que fue creado a partir del correo del user
   validateEmail = (req: Request, res: Response) => {
     const { token } = req.params;
-    res.json(token);
-    // this.authService.validateEmail( token )
-    // // .then( () => res.json('Email Validated Successfully'))
-    // // .catch( error => this.handleError( error,res ) )
+    
+    this.authService.validateEmail( token )
+    .then( () => res.json('Email Validated Successfully'))
+    .catch( error => this.handleError( error,res ) )
   };
 }

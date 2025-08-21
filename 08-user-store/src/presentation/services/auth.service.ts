@@ -111,4 +111,23 @@ export class AuthService {
 
     return true;
   };
+
+  // En este punto el user recibe un link de verificacion con un token generado a partir de su mismo correo (sendEmailValidationLink).
+  public validateEmail = async(token: string) => {
+
+    const payload = await JwtAdapter.validateToken(token);
+    if ( !payload ) throw CustomError.unauthorized('Invalid Token, Nigrrrrooooo');
+
+    const { email } = payload as { email: string };
+    if( !email ) throw CustomError.internalServer('Email not in token, woooooot');
+    
+    // Si no encuentro un user con el correo que obtuve del 'decoded' token (desde JwtAdapter.validateToken), entonces no podemos verificar al user.
+    const user = await UserModel.findOne({ email })
+    if( !user ) throw CustomError.internalServer('Email was somehow removed from the database LUUUL');
+
+    user.emailValidated = true; // Como encontramos el correo, ya podemos ponerle correo verificado
+    await user.save();
+
+    return true;
+  }
 }
