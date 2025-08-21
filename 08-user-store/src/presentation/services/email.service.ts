@@ -26,7 +26,8 @@ export class EmailService {
   constructor(
     mailerService: string,
     mailerEmail: string,
-    senderEmailPassword: string
+    senderEmailPassword: string,
+    private readonly postToProvider: boolean
   ) {
     // Esta config es de QUIEN MANDA EL CORREO
     this.transporter = nodemailer.createTransport({
@@ -42,6 +43,7 @@ export class EmailService {
     const { to, subject, htmlBody, attachments = [] } = options;
 
     try {
+      if (!this.postToProvider) return true;
       //No usamos el valor retornado de sentInformation, pero lo tenemos por si acaso.
       // Aqui configuramos A QUIEN LE ENVIAMOS EL CORREO
       const sentInformation = await this.transporter.sendMail({
