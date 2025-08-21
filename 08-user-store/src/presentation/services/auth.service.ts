@@ -2,7 +2,7 @@
 
 // El servicio es el que se encarga de hacer el trabajo
 
-import { bcryptAdapter, JwtAdapter } from "../../config";
+import { bcryptAdapter, envs, JwtAdapter } from "../../config";
 import { UserModel } from "../../data";
 
 import {
@@ -11,9 +11,11 @@ import {
   UserEntity,
   LoginUserDTO,
 } from "../../domain";
+import { EmailService } from "./email.service";
 
 export class AuthService {
-  constructor() {}
+  // Inyectamos el Email Service
+  constructor(private readonly emailService: EmailService) {}
 
   public async registerUser(registerUserDto: RegisterUserDTO) {
     const existUser = await UserModel.findOne({ email: registerUserDto.email });
@@ -27,9 +29,12 @@ export class AuthService {
 
       await user.save();
 
-      // JWT <--- para mantener la autenticacion del user
+      // Creamos el JWT a partir del id
+      const token = await JwtAdapter.generateToken({ id: user.id });
+      if (!token) throw CustomError.internalServer("Error while creating JWT");
 
       // Email de confirmacion
+      await this.sendEmailValidationLink(user.email);
 
       /* 
         - Queremos devolver el user, pero el user de mongoose rompe la app.
@@ -38,7 +43,7 @@ export class AuthService {
       */
       const { password, ...userEntity } = UserEntity.fromObject(user);
 
-      return { user: userEntity, token: "123ABD" };
+      return { user: userEntity, token: token };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
     }
@@ -65,10 +70,9 @@ export class AuthService {
 
     const { password, ...userEntity } = UserEntity.fromObject(user);
 
-    // Creamos el token a partir del id y el correo
+    // Creamos el token a partir del id
     const token = await JwtAdapter.generateToken({
       id: user.id,
-      email: user.email,
     });
     if (!token) throw CustomError.internalServer("Error while creating JWT");
 
@@ -78,4 +82,33 @@ export class AuthService {
       token: token,
     };
   }
+
+  private sendEmailValidationLink = async (email: string) => {
+    // Generamos un token a partir del correo (El correo es el Payload)
+    const token = await JwtAdapter.generateToken({ email });
+    if (!token) throw CustomError.internalServer("Error getting token");
+
+    // El link que vamos a enviar al correo para confirmarlo, debe tener el token que generamos
+    const link = `${envs.WEB_SERVICE_URL}/auth/validate-email/${token}`;
+
+    // El body del correo
+    const html = `
+      <h1>Validate your email</h1>
+      <p>Click on the following link to validate your email</p>
+      <a href="${link}">Validate your email: ${email}</a>
+    `;
+
+    const options = {
+      to: email,
+      subject: "Validate your email",
+      htmlBody: html,
+    };
+
+    // Enviamos el Correo a traves del servicio del emailService que inyectamos
+    const isSet = await this.emailService.sendEmail(options);
+    if (!isSet)
+      throw CustomError.internalServer("Bruuuuh, error sending email");
+
+    return true;
+  };
 }

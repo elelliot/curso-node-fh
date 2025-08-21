@@ -21,21 +21,25 @@ export class AuthController {
 
     this.authService
       .registerUser(registerDto!)
-      .then( user => res.json( user ) )
-      .catch( error => this.handleError( error, res ) );
+      .then((user) => res.json(user))
+      .catch((error) => this.handleError(error, res));
   };
 
   loginUser = (req: Request, res: Response) => {
     const [error, loginDto] = LoginUserDTO.login(req.body);
-    if (error) return res.status(400).json( { error } )
+    if (error) return res.status(400).json({ error });
 
     this.authService
-    .loginUser(loginDto!)
-    .then( user => res.json( user ) )
-    .catch( error => this.handleError( error, res ) );
+      .loginUser(loginDto!)
+      .then((user) => res.json(user))
+      .catch((error) => this.handleError(error, res));
   };
 
   validateEmail = (req: Request, res: Response) => {
-    res.json("validateEmail");
+    const { token } = req.params;
+    res.json(token);
+    // this.authService.validateEmail( token )
+    // // .then( () => res.json('Email Validated Successfully'))
+    // // .catch( error => this.handleError( error,res ) )
   };
 }
