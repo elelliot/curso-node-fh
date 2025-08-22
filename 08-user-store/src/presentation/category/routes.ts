@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { CategoryController } from "./controller";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class CategoryRoutes {
   static get routes(): Router {
@@ -7,7 +8,10 @@ export class CategoryRoutes {
     const controller = new CategoryController();
 
     router.get("/", controller.getCategories);
-    router.post("/", controller.createCategory);
+
+    // El middleware va en el 2do argumento como, lo podemos enviar como 1 solo o como un array de middlewares
+    // El middleware verifica si tenemos el JWT y el user para continuar al createCategory
+    router.post("/", [AuthMiddleware.validateJWT], controller.createCategory);
 
     return router;
   }

@@ -10,7 +10,7 @@ export class CreateCategoryDto {
     let availableBoolean = available;
 
     if (!name) return ["Missing name"];
-    // Validamos que 'available' no sea diferente de boolean, si no lo convertimos a boolean
+    // Validamos que 'available' no sea diferente de boolean, si no, lo convertimos a boolean
     if (typeof available !== "boolean") {
       availableBoolean = available === "true";
     }

@@ -25,20 +25,19 @@ export class JwtAdapter {
     });
   }
 
-  static validateToken(token: string) {
+  static validateToken<T>(token: string): Promise<T | null> {
     /* Validamos el Token que recibimos en 'api/auth/validate-email/:token'
     1- El token fue creado a partir del correo.
     2- Al ser valido el token, devolvemos lo que fue descifrado (el correo)
        
     */
-    return new Promise( ( resolve )=> {
-      jwt.verify( token, JWT_SEED, ( err, decoded )=>{
-
-        if ( err ) return resolve(null);
+    return new Promise((resolve) => {
+      jwt.verify(token, JWT_SEED, (err, decoded) => {
+        if (err) return resolve(null);
 
         // 'decoded' es el payload con el que se creo el token, en este caso el correo.
-        resolve( decoded )
-      })
-    })
+        resolve(decoded as T);
+      });
+    });
   }
 }
