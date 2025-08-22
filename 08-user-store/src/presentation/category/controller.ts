@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CustomError } from "../../domain";
+import { CreateCategoryDto, CustomError } from "../../domain";
 
 // Las routes solo llaman a los controller.
 // Nuestro controller llama al servicio.
@@ -17,8 +17,12 @@ export class CategoryController {
     return res.status(500).json({ error: "Internal Server Error" });
   };
 
+  // Para crear una categoria ocupamos el token del usuario (Aquel que creamos a partir del 'id')
   createCategory = async (req: Request, res: Response) => {
-    res.json("Create Category");
+    const [error, createCategoryDto] = CreateCategoryDto.create(req.body);
+    if (error) return res.status(400).json({ error });
+
+    res.json(createCategoryDto);
   };
 
   getCategories = async (req: Request, res: Response) => {
