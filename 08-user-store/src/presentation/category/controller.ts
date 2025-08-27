@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateCategoryDto, CustomError } from "../../domain";
+import { CreateCategoryDto, CustomError, PaginationDTO } from "../../domain";
 import { CategoryService } from "../services/category.service";
 
 // Express recomienda que no usemos async/await en los controladores, sino que usemos promesas
@@ -31,9 +31,16 @@ export class CategoryController {
       .catch((error) => this.handleError(error, res));
   };
 
-  getCategories = async (_: Request, res: Response) => {
+  getCategories = async (req: Request, res: Response) => {
+    //----------------------------- Pagination
+    // Tomamos los query params desde el request
+    // Default values (Vienen como string, pero el valor por defecto que les ponemos son numeros)
+    const { page = 1, limit = 10 } = req.query; // Si no mando nada, entonces ----> page=1 y limit=10
+    const [error, paginationDTO] = PaginationDTO.create(+page, +limit); // Convertimos a number en caso de mandarlos
+    if (error) return res.status(400).json({ error });
+
     this.categoryService
-      .getCategories()
+      .getCategories(paginationDTO!)
       .then((categories) => res.json(categories))
       .catch((error) => this.handleError(error, res));
   };
