@@ -1,5 +1,6 @@
 import { CategoryModel } from "../../data";
 import { CreateCategoryDto, CustomError, UserEntity } from "../../domain";
+import { CategoryEntity } from "../../domain/entities/category.entity";
 
 export class CategoryService {
   // DI
@@ -25,6 +26,18 @@ export class CategoryService {
         name: category.name,
         available: category.available,
       };
+    } catch (error) {
+      throw CustomError.internalServer(`${error}`);
+    }
+  }
+
+  async getCategories() {
+    try {
+      const categories = await CategoryModel.find();
+      if (!categories) throw CustomError.notFound("No categories found");
+
+      const categoriesEntity = CategoryEntity.fromObject(categories);
+      return categoriesEntity;
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
     }
