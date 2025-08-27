@@ -15,7 +15,7 @@ export class AuthMiddleware {
   static async validateJWT(req: Request, res: Response, next: NextFunction) {
     // Tomamos el 'Bearer Token' desde Headers -> Authorization del request header
     const authorization = req.header("Authorization");
-    console.log(authorization);
+    // console.log(authorization);
 
     if (!authorization)
       return res.status(401).json({ error: "No token provided" });

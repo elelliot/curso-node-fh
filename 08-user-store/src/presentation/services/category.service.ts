@@ -22,6 +22,8 @@ export class CategoryService {
 
       return {
         id: category.id,
+        name: category.name,
+        available: category.available,
       };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
