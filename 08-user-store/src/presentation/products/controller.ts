@@ -21,7 +21,10 @@ export class ProductController {
   };
 
   createProduct = (req: Request, res: Response) => {
-    const [error, createProductDto] = CreateProductDTO.create(req.body);
+    const [error, createProductDto] = CreateProductDTO.create({
+      ...req.body,
+      user: req.body.user.id, // El user viene del AuthMiddleware, que lo puso en el body al ser correctamente validado
+    });
     if (error) return res.status(400).json({ error });
 
     this.productService

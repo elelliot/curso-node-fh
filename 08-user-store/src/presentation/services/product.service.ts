@@ -12,7 +12,7 @@ export class ProductService {
   constructor() {}
 
   // El DTO ya tiene el user id, por eso no lo pongo aca, ahora lo hicimos diferente
-  async createProduct(createProductDTO: CreateProductDTO) {
+  async createProduct(createProductDTO: CreateProductDTO): Promise<any> {
     const productExists = await ProductModel.findOne({
       name: createProductDTO.name,
     });
