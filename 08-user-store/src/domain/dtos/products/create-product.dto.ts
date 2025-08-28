@@ -2,7 +2,7 @@ export class CreateProductDTO {
   private constructor(
     public readonly name: string,
     public readonly available: boolean,
-    public readonly price: string,
+    public readonly price: number,
     public readonly description: string,
     public readonly user: string, //ID
     public readonly category: string //ID
