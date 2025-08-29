@@ -39,7 +39,7 @@ export class ProductService {
       // -------------- PAGINATION
       const [total, products] = await Promise.all([
         ProductModel.countDocuments(),
-        ProductModel.find()
+        (ProductModel.find() as any)
           .skip((page - 1) * limit)
           .limit(limit) //- TODO:  Debo poner 'as any' por que si no Typescript se pone a llorar por el tipado de mongoose
           .populate("user"), //Devuelve la info del user en lugar del puroid
@@ -56,7 +56,7 @@ export class ProductService {
         next: `api/products?page=${page + 1}&limit=${limit}`,
         previous:
           page - 1 > 0 ? `api/products?page=${page - 1}&limit=${limit}` : null,
-        products: products as any,
+        products: products,
       };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
