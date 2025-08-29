@@ -41,7 +41,8 @@ export class ProductService {
         ProductModel.countDocuments(),
         ProductModel.find()
           .skip((page - 1) * limit)
-          .limit(limit) as any, // Debo poner 'as any' por que si no Typescript se pone a llorar por el tipado de mongoose
+          .limit(limit) //- TODO:  Debo poner 'as any' por que si no Typescript se pone a llorar por el tipado de mongoose
+          .populate("user"), //Devuelve la info del user en lugar del puroid
       ]);
 
       if (!products) throw CustomError.notFound("No products found");
@@ -55,7 +56,7 @@ export class ProductService {
         next: `api/products?page=${page + 1}&limit=${limit}`,
         previous:
           page - 1 > 0 ? `api/products?page=${page - 1}&limit=${limit}` : null,
-        products: products,
+        products: products as any,
       };
     } catch (error) {
       throw CustomError.internalServer(`${error}`);
