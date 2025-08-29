@@ -29,5 +29,17 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Para modificar la salida del JSON (lo que se retorna en las queries)
+// Aplica para ----> `Create` Product y `Get` Products
+userSchema.set("toJSON", {
+  virtuals: true, // Nos agrega el 'id' al retornar la data en las queries (el _id todavia lo muestra pero abajo lo quitamos en el transform)
+  versionKey: false, // Le quita el '__v',
+  transform: function (doc, { _id, password, ...rest }, options) {
+    return {
+      ...rest, // Le quitamos el '_id' al destructurar
+    };
+  },
+});
+
 // Creamos el Modelo de User a partir del Esquema y lo exportamos
 export const UserModel = mongoose.model("User", userSchema);

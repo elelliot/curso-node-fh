@@ -39,10 +39,11 @@ export class ProductService {
       // -------------- PAGINATION
       const [total, products] = await Promise.all([
         ProductModel.countDocuments(),
-        (ProductModel.find() as any)
+        (ProductModel.find() as any) //- TODO:  Debo poner 'as any' por que si no Typescript se pone a llorar por el tipado de mongoose
           .skip((page - 1) * limit)
-          .limit(limit) //- TODO:  Debo poner 'as any' por que si no Typescript se pone a llorar por el tipado de mongoose
-          .populate("user"), //Devuelve la info del user en lugar del puroid
+          .limit(limit)
+          .populate("user") //Devuelve la info del user en lugar del puro id en las queries
+          .populate("category"),
       ]);
 
       if (!products) throw CustomError.notFound("No products found");
