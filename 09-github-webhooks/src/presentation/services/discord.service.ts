@@ -10,6 +10,14 @@ export class DiscordService {
     // Ver documentacion de Discord, armamos el objecto que debemos enviar
     const body = {
       content: message,
+      // Agregar imagen al mensaje (gif)
+      // embeds: [
+      //   {
+      //     image: {
+      //       url: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTV0dW9qYTVmaDd4cmM0M3d0cXFzc3RpZXB5bDFnaGtxdDZ1Mjd2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0IybQ6l8nfKjxQv6/giphy.gif",
+      //     },
+      //   },
+      // ],
     };
 
     const resp = await fetch(this.discordWebhookUrl, {
