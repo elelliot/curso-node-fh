@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
-import { GithubService } from "./services/github.service";
+import { GithubService } from "../services/github.service";
+import { DiscordService } from "../services/discord.service";
 
 export class GithubController {
-  constructor(private readonly githubService = new GithubService()) {}
+  constructor(
+    private readonly githubService = new GithubService(),
+    private readonly discordService = new DiscordService()
+  ) {}
 
   //Podemos obtener la informacion del evento mediante el request del body (si lo configuramos con 'application/json')
   webHookHandler = (req: Request, res: Response) => {
@@ -31,8 +35,10 @@ export class GithubController {
         message = `Unknown Event: ${githubEvent}`;
     }
 
-    console.log({ message });
-
-    res.status(202).send("Accepted");
+    // Mandamos el mensaje que obtenemos de Github a Discord
+    this.discordService
+      .notify(message)
+      .then(() => res.status(202).send("Accepted"))
+      .catch(() => res.status(500).json({ error: "Internal Server Ereror" }));
   };
 }

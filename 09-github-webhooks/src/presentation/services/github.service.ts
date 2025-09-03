@@ -1,4 +1,4 @@
-import { GithubIssuePayload, GithubStarPayload } from "../../../interfaces";
+import { GithubIssuePayload, GithubStarPayload } from "../../interfaces";
 
 export class GithubService {
   constructor() {}
@@ -11,7 +11,6 @@ export class GithubService {
 
   onIssue(payload: GithubIssuePayload): string {
     const { action, issue } = payload;
-    console.log(payload);
     if (action === "opened") {
       return `An issue was opened with this title: ${issue.title}`;
     }
