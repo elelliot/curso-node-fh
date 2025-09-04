@@ -31,6 +31,7 @@
 import express from "express";
 import { envs } from "./config";
 import { GithubController } from "./presentation/github/controller";
+import { GithubSha256Middleware } from "./presentation/middlewares/github-sha256.middleware";
 
 (() => {
   main();
@@ -46,7 +47,11 @@ function main() {
   // app.use(express.urlencoded({ extended: true })); // Por si llegamos a configurarlo en x-www-form-urlencoded
 
   // Declaramos las rutas
-  app.post("/api/github", controller.webHookHandler);
+  app.post(
+    "/api/github",
+    [GithubSha256Middleware.verifyGithubSignature],
+    controller.webHookHandler
+  );
 
   app.listen(envs.PORT, () => {
     console.log(`Server running on port ${envs.PORT}`);

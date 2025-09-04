@@ -16,10 +16,10 @@ export class GithubController {
 
     /* 
     Que obtengamos `x-github-event` no quiere decir venga de github, puede ser falsificado y por eso github tambien nos envia un signature con el
-    Header ---> x-hub-signature-256 el cual es un hash, pero a su vez esto tambien puede ser enviado al header, entonces como es la seguridad ????
-
-    To be Continued...
-    // const signature = req.header("x-hub-signature-256") ?? "unknown";
+    Header ---> x-hub-signature-256 el cual es un hash, pero a su vez esto tambien puede ser enviado al header, asi que implementamos la validacion de ese signature
+    por medio de un middleware (ver github-sha256 middleware)
+    
+    // const signature = req.header("x-hub-signature-256");
     */
 
     const payload = req.body; //Aqui obtenemos la data del payload mandado por el webhook cuando se trigerea el evento.
