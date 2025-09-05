@@ -16,3 +16,6 @@ logs/
 
 08-user-store/mongo
 
+
+# Local Netlify folder
+.netlify
