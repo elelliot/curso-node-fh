@@ -23,6 +23,8 @@ Ver Docs:
 import type { Config, Context } from "@netlify/functions";
 
 export default async (req: Request, context: Context) => {
+  //Este console log se vera en los logs del proyecto de Netlify desde el admin panel
+  console.log("Hello from hello.ts");
   return new Response(
     JSON.stringify({ message: "Hola perritas desde Netlify" }),
     {

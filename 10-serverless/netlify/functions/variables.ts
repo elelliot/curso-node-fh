@@ -1,7 +1,9 @@
 import type { Config, Context } from "@netlify/functions";
 
 export default async (req: Request, context: Context) => {
-  // Tambien podemos leer envs en netlify functions
+  console.log("Hello from variables.ts");
+
+  // Tambien podemos leer envs en netlify functions, cuando las agreguemos desde el panel de netlify, tendremos que hacer deploy del proyecto de nuevo
   const myImportantVariable = process.env.MY_IMPORTANT_VARIABLE;
 
   if (!myImportantVariable) {
