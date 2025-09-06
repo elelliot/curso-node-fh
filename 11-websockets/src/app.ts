@@ -4,7 +4,7 @@
  pero como postman pone automaticamente el `ws:` solo basta con poner el `localhost:3000`
 
 
- Para probar desde un front-end, abrimos `12-websockets-front`, y corremos 
+ Para probar desde un front-end, abrimos desde `public-> index.html`, y corremos 
  `npx http-server -o` para que nos monte el cliente con su servidor
  */
 
