@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Websockets - <small>Status</small></h1>
+
+    <form>
+      <input type="text" placeholder="Send Message" />
+      <button>Send Message</button>
+    </form>
+
+    <ul id="messages"></ul>
+
+    <script>
+      let socket = null;
+
+      const form = document.querySelector("form");
+      const input = document.querySelector("input");
+      const messagesElement = document.querySelector("#messages");
+      const statusElement = document.querySelector("small");
+
+      // Enviamos el mensaje del form al server
+      function sendMessage(message) {
+        socket && socket.send(message);
+      }
+
+      function renderMessage(message) {
+        const li = document.createElement("li");
+        li.innerHTML = message;
+        messagesElement.prepend(li); //append lo pone al final, pero queremos que este al principio cada nuevo mensaje
+      }
+
+      // Atrapamos el mensaje del input al presionar submit con el boton (enter nel)
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = input.value;
+
+        sendMessage(message);
+        input.value = null;
+      });
+
+      function connectoToServer() {
+        // Nos conectamos al backend desde el cliente
+        socket = new WebSocket("ws:localhost:3000");
+
+        // Cuando nos conectamos
+        socket.onopen = (event) => {
+          statusElement.innerText = "Online";
+        };
+
+        // Cuando nos desconectamos
+        socket.onclose = (event) => {
+          statusElement.innerText = "Offline - Intentando Reconectarse";
+
+          // Intentamos reconectarnos al server cuando perdamos la conexion (gracias a la recursion esto sirve)
+          setTimeout(() => {
+            connectoToServer();
+          }, 1500); //Esto pudiera ser multiplicado por un random number para que las reconexiones no se disparen al mismo tiempo por parte de los clientes
+        };
+
+        // Cuando el server nos responde el mensaje
+        socket.onmessage = (event) => {
+          // podemos recibir la data como string o json (el json recibido es string, debemos parsearlo de vuelta)
+          const payload = JSON.parse(event.data);
+          // console.log(payload)
+          renderMessage(payload.payload); //es por que en el back devolvemos el json asi, podria destructurar pero nah
+        };
+      }
+
+      connectoToServer();
+    </script>
+  </body>
+</html>
